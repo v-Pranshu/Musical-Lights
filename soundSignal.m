@@ -1,9 +1,24 @@
+load handel.mat
+
+filename = 'handel.wav';
+audiowrite(filename,y,Fs);
+Fs = 8000;
+[y] = audioread('handel.wav');
+
+%sound(y,Fs);
+%audio_path = 'C:\Users\vyasp\PC\Downloads';
+%[Audio, sampleRate] = audioread(fullfile(audio_path, 'Sound samples_127-bpm-hip-hop-beat-loop.wav'));
+%specgram(Audio(:,1),1024, sampleRate);
+
 
 numBands = 18;
 dt = 0.001;
-t = 0:dt:1;
-fclean = sin(2*pi*50*t)+2*sin(2*pi*120*t);
-f = fclean + 2.4*randn(size(t));
+t = 0:dt:10;
+fclean = y;
+f = fclean;
+%disp(fclean)
+
+
 
 
 %for i = 1:+1:10
@@ -11,21 +26,25 @@ f = fclean + 2.4*randn(size(t));
   %  disp(" ");    
 %end
 
+
 figure;
 
 n = length(t);
-fhat = fft(f, n);
+fhat = fft(f,n);
+disp(fhat);
+
+%{
 PSD = fhat.*conj(fhat)/n;
 freq = 1/(dt*n)*(0:n);
 L = 1:1:floor(n/2);
-%%disp(fhat)
+plot(freq(L), PSD(L));
 
-%plot(freq(L), PSD(L));
 
 PSDClean = 0:0:length(PSD);
+
 fhatClean = 0:0:length(fhat);
 for i = 1:+1:length(PSD)
-    if PSD(i) >= 100
+    if PSD(i) >= 0.01
         PSDClean(i) = PSD(i);
         fhatClean(i) = fhat(i);
     
@@ -39,6 +58,8 @@ end
 ff = ifft(fhatClean);
 
 plot(freq(L), PSDClean(L));
+
+sound(ff, Fs);
 
 %Make frequency bands
 band = 1:numBands;
@@ -56,6 +77,8 @@ for i = 1:+1:numBands
 end
 
 disp(band)
+%}
+
 
 
 
